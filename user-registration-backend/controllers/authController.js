@@ -1,11 +1,11 @@
-const User = require('../models/User');
-const generateToken = require('../utils/generateToken');
+import User from "../models/User.js";
+import generateToken from "../utils/generateToken.js";
 
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { firstName, lastName, NIDNumber, phoneNumber, password, bloodGroup } = req.body;
 
   const userExists = await User.findOne({ NIDNumber });
-  if (userExists) return res.status(400).json({ message: 'User already exists' });
+  if (userExists) return res.status(400).json({ message: "User already exists" });
 
   const user = await User.create({ firstName, lastName, NIDNumber, phoneNumber, password, bloodGroup });
   if (user) {
@@ -16,20 +16,18 @@ const registerUser = async (req, res) => {
       token: generateToken(user.id),
     });
   } else {
-    res.status(400).json({ message: 'Invalid user data' });
+    res.status(400).json({ message: "Invalid user data" });
   }
 };
 
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { phoneNumber, password } = req.body;
 
   const user = await User.findOne({ phoneNumber });
   if (user && (await user.matchPassword(password))) {
-    res.cookie('token', generateToken(user.id), { httpOnly: true });
-    res.json({ message: 'Login successful' });
+    res.cookie("token", generateToken(user.id), { httpOnly: true });
+    res.json({ message: "Login successful" });
   } else {
-    res.status(401).json({ message: 'Invalid credentials' });
+    res.status(401).json({ message: "Invalid credentials" });
   }
 };
-
-module.exports = { registerUser, loginUser };

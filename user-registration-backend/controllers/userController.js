@@ -1,17 +1,17 @@
-const User = require('../models/User');
+import User from "../models/User.js";
 
-const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
   const user = req.user;
   if (user) res.json(user);
-  else res.status(404).json({ message: 'User not found' });
+  else res.status(404).json({ message: "User not found" });
 };
 
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   const users = await User.find({});
   res.json(users);
 };
 
-const updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   const user = req.user;
 
   if (user) {
@@ -22,18 +22,16 @@ const updateUserProfile = async (req, res) => {
     const updatedUser = await user.save();
     res.json(updatedUser);
   } else {
-    res.status(404).json({ message: 'User not found' });
+    res.status(404).json({ message: "User not found" });
   }
 };
 
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
     await user.remove();
-    res.json({ message: 'User removed' });
+    res.json({ message: "User removed" });
   } else {
-    res.status(404).json({ message: 'User not found' });
+    res.status(404).json({ message: "User not found" });
   }
 };
-
-module.exports = { getUserProfile, getAllUsers, updateUserProfile, deleteUser };
